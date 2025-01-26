@@ -1,104 +1,45 @@
-'use client';
-import { signInWithGoogle , signOut } from "./_config/auth";
-import { onAuthStateChanged , User} from "firebase/auth";
-import { auth } from "./_config/firebaseConfig";
-import { useEffect, useState } from "react";
-import  {useRouter} from "next/navigation";
+import Image from 'next/image';
+import Link from 'next/link';
 
-export default function Home() {
-
-  const [user, setUser] = useState<User | null>(null);
-  const router = useRouter();
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const handleSignIn = async () => {
-
-      console.log("Signing in with Google");
-      try{
-        await signInWithGoogle();
-        router.push('dashboard');
-      }
-      catch(error){
-        console.error("Error signing in with Google", error);
-      }
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      console.log("Sign out successful");
-    } catch (error) {
-      console.error("Error signing out", error);
-    }
-  };
-  
+const Landing = () => {
   return (
-    <div className="flex flex-col  bg-[#2F394D]  min-h-screen">
-      <div className="flex justify-between pl-5 pr-5 items-center">
-          <img src = "Back.png"></img>
-          <div className="bg-[#330036] text-xl p-2 rounded-md " >
-            SIGN UP
-          </div>
-
+    <div className="flex flex-col bg-white w-full h-full">
+      <div className="w-full h-20 items-center flex flex-row justify-between">
+        <h1 className="text-4xl text-[#330036] font-bold ml-20">gesture</h1>
+        <Link
+          rel="noopener noreferrer"
+          target="_blank"
+          href={'https://github.com/AxeFontaine/tamuhack25'}
+          className="h-3/5 w-auto mr-20"
+        >
+          <Image src="github.svg" alt="" width={0} height={0} className="h-full w-full"></Image>
+        </Link>
       </div>
-        <div className="flex flex-col  h-full justify-center items-center">
-      
-      <div className="flex flex-col bg-[#330036] w-[30%] h-[70vh] items-center justify-evenly rounded-2xl ">
-        <div className="font-bold text-2xl">
-          Sign in
-        </div>
-        <div className="flex flex-col  h-[47%] w-[70%] justify-between">
-          <div className="flex flex-col">
-            <div className="font-semibold text-xl">
-              Username
-            </div>
-            <input className="bg-white rounded-xl h-fit text-black p-1 text-lg">
 
-            </input>
-          </div>
-          <div className="flex flex-col ">
-            <div className="font-semibold text-xl">
-              Password
-            </div>
-            <input type="password" className="bg-white rounded-xl h-fit p-1 text-xl">
-            </input>
-            <div className="text-sm">
-              Forgot password?
-            </div>
-          </div>
-          <div className=" bg-[#56666B] rounded-xl h-fit p-1 text-l text-center">
-            Sign in
-          </div>
+      <div className="flex flex-row items-center justify-center h-5/6 w-full">
+        <Image
+          src="hand.png"
+          alt=""
+          width={0}
+          height={0}
+          className="w-fit h-full"
+          objectFit="contain"
+          unoptimized={true}
+        ></Image>
+        <div className="flex flex-col items-center justify-center w-1/2 h-full">
+          <p className="font-bold text-3xl text-[#330036] w-3/4 text-center">
+            The newest way to learn how to sign fast and easy!
+          </p>
+          <Link
+            href={'sign-in'}
+            className="bg-[#330036] text-white font-bold text-2xl w-72 h-16 rounded-xl mt-10 flex items-center justify-center"
+          >
+            Get Started!
+          </Link>
         </div>
-        <div className="font-semibold">
-          OR
-        </div>
-
-        <button className="flex bg-[#56666B] w-[70%] rounded-xl h-fit p-1 text-l  justify-evenly items-center" 
-        onClick={handleSignIn}>
-            <img src = "googlelogo.png" className="h-8 w-8">
-            
-            </img>
-          <div className="" >
-            Sign in with google
-          </div>
-        </button>
-
       </div>
     </div>
-
-    </div>
-    
   );
-}
+};
+
+export default Landing;
