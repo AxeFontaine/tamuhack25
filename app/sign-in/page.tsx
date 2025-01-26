@@ -25,8 +25,12 @@ export default function Home() {
   const handleSignIn = async () => {
     console.log('Signing in with Google');
     try {
-      await signInWithGoogle();
-      router.push('dashboard');
+      const result = await signInWithGoogle();
+      if (result) {
+        router.push('dashboard');
+      } else {
+        console.error('Sign in was not successful');
+      }
     } catch (error) {
       console.error('Error signing in with Google', error);
     }
