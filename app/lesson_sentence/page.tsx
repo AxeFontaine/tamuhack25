@@ -1,18 +1,34 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const Sentence = () => {
   const [timer, setTimer] = useState(10);
   const [signs, setSigns] = useState(['I am', 'hungry']);
   const [currSignIdx, setCurrSignIdx] = useState(0);
 
+  const [currActivity, setCurrActivity] = useState<number>(() => {
+    // Initialize currActivity from localStorage
+    const savedActivity = localStorage.getItem('currActivity');
+    return savedActivity ? parseInt(savedActivity, 10) : 1;
+  });
+  const router = useRouter();
+
+  useEffect(() => {
+    // Update localStorage whenever currActivity changes
+    localStorage.setItem('currActivity', currActivity.toString());
+  }, [currActivity]);
+
   useEffect(() => {
     setTimeout(() => {
-      if (timer == 0){
+      if (timer == 0) {
         if (currSignIdx < signs.length - 1) {
           setCurrSignIdx(currSignIdx + 1);
           setTimer(10);
+        } else {
+          setCurrActivity(currActivity - 1);
+          router.back();
         }
         return;
       }
