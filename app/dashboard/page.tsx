@@ -1,11 +1,22 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const Dashboard = () => {
   const currUser = false;
-  const [currActivity, setCurrActivity] = useState(1);
+  const [currActivity, setCurrActivity] = useState<number>(() => {
+    // Initialize currActivity from localStorage
+    const savedActivity = localStorage.getItem('currActivity');
+    return savedActivity ? parseInt(savedActivity, 10) : 1;
+  });
+  const router = useRouter();
+
+  useEffect(() => {
+    // Update localStorage whenever currActivity changes
+    localStorage.setItem('currActivity', currActivity.toString());
+  }, [currActivity]);
 
   const ActivityButton: React.FC<{ idx: number }> = ({ idx }) => {
     let position;
@@ -35,6 +46,7 @@ const Dashboard = () => {
     }
 
     const handleClick = () => {
+      router.push(Math.floor(Math.random() * 2) ? '/lesson_sentence' : '/lesson_match');
       setCurrActivity(currActivity + 1);
     };
 

@@ -2,8 +2,10 @@
 
 // import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const Match = () => {
+  const router = useRouter();
   const [match_data, setMatch_data] = useState<string[]>([]);
   const [selected, setSelected] = useState<number[]>([]);
   const [matched, setMatched] = useState<number[]>([]);
@@ -31,8 +33,9 @@ const Match = () => {
     if (match_data.length != 0 && match_data.length == matched.length) {
       setMatch_data(shuffle(match_data));
       setMatched([]);
+      router.back();
     }
-  }, [selected, match_data, matched]);
+  }, [selected, match_data, matched, router]);
 
   const handleClick = (index: number) => {
     if (selected.length < 2 && !selected.includes(index) && !matched.includes(index)) {
