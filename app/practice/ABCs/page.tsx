@@ -1,3 +1,5 @@
+import NavigationBar from "../../_components/NavigationBar";
+
 const ABCs = () => {
     const pickRandLetter = ({letters}: {letters: Object[]}) => {
         return letters[Math.floor(Math.random() * letters.length)];
@@ -5,6 +7,7 @@ const ABCs = () => {
 
     return (
         <div className="min-h-screen bg-[#2F394D]">
+            <NavigationBar />
             <div className="h-16"></div>
             <div className="space-y-16">
                 <div className="flex w-7/12 justify-self-center bg-[#D8A1CA] justify-center rounded-2xl p-5 text-5xl text-[#330036] font-bold">
