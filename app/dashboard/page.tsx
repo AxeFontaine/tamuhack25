@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 const Dashboard = () => {
   const ActivityButton: React.FC<{ idx: number }> = ({ idx }) => {
     let position = 'place-self-start';
@@ -28,7 +30,28 @@ const Dashboard = () => {
           <button className="px-32 py-2 bg-[#D8A1CA] rounded-md"> Sign up </button>
           <button className="px-32 py-2 bg-[#2CDE9A] rounded-md"> Sign in </button>
         </div>
-        <div className="w-10/12 h-96 border-[#56666B] border-8 rounded-lg"></div>
+        <div className="w-10/12 h-96 border-[#56666B] border-8 rounded-lg flex flex-col">
+          <div className="w-full h-fit flex flex-row p-8 justify-between">
+            <div className="font-bold text-2xl text-[#EEE1B3] flex flex-row gap-2 items-center">
+              <Image src="novice_badge.svg" alt="" width={40} height={40} />
+              Novice
+            </div>
+            <div className="font-bold text-2xl text-[#2CDE9A] flex flex-row gap-2 items-center">
+              <Image src="flame.svg" alt="" width={30} height={30} />2
+            </div>
+          </div>
+
+          <div className="p-10">
+            <h2 className="font-bold text-2xl text-white"> Daily Challenge </h2>
+            <div className="text-[#EEE1B3] font-bold text-md pl-5">
+              Finish 5 activities
+              <div className="relative w-full h-5 bg-slate-500 rounded-lg">
+                <p className="absolute h-full left-0 right-0 me-auto ms-auto w-fit">2/5</p>
+                <div className="w-2/5 h-full bg-[#D8A1CA] rounded-lg"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
