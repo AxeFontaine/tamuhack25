@@ -5,13 +5,21 @@ import NavigationBar from "../../_components/NavigationBar";
 
 const ABCs = () => {
     const [isVisible, setIsVisible] = useState(true);
+    const [selectedLetter, setSelectedLetter] = useState("");
+    const [isCorrect, setIsCorrect] = useState(false);
 
-    const pickRandLetter = ({letters}: {letters: Object[]}) => {
-        return letters[Math.floor(Math.random() * letters.length)];
+
+    const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"];
+
+
+    const pickRandLetter = () => {
+        const randomLetter = letters[Math.floor(Math.random() * letters.length)];
+        setSelectedLetter(randomLetter);
     };
 
     const toggleVisibility = () => {
         setIsVisible(!isVisible);
+        pickRandLetter();
     };
 
     return (
@@ -21,7 +29,7 @@ const ABCs = () => {
             <div className="space-y-16 justify-content-center items-center flex flex-col">
                 <div className="flex w-7/12 bg-[#D8A1CA] justify-center rounded-2xl p-5 text-5xl text-[#330036] font-bold">
                     <h1 className="">
-                        Sign the Letter
+                        Sign The Letter
                     </h1>
                 </div>
                 {isVisible && (
@@ -46,7 +54,7 @@ const ABCs = () => {
                     ) : (
                         <>
                             <h1 className="font-bold text-3xl">
-                                Letter
+                                {selectedLetter}
                             </h1>
                             <h2>
                                 Click To See Sign
