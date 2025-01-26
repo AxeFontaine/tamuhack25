@@ -1,10 +1,8 @@
-import NavigationBar from "../_components/NavigationBar.jsx";
 import PracticeBar from "../_components/PracticeBar.jsx";
 
 const Practice = () => {
   return (
-    <div className="bg-white min-h-screen">
-        <NavigationBar/>
+    <div className="bg-[#2F394D] min-h-screen">
         <h3 className="p-10 text-black justify-self-center">Choose Your Practice</h3>
         <div className="space-y-4">
         <PracticeBar Name="ABCs" Description="Practice the Alphabet" />

@@ -1,11 +1,11 @@
 export default function NavigationBar() {
     return (
-        <div className="bg-[#500000] h-16 content-center justify">
-            <button className="p-5">Logo</button>
-            <button className="p-5 duration-300 ease-in-out hover:bg-[#5F2727] hover:text-white">Learn</button>
-            <button className="p-5 duration-300 ease-in-out hover:bg-[#5F2727] hover:text-white">Practice</button>
-            <button className="p-5 duration-300 ease-in-out hover:bg-[#5F2727] hover:text-white">Settings</button>
-            <button className="float-right p-5">Profile</button>
+        <div className="bg-[#111621] h-16 content-center flex items-center">
+            <a href="/" className="p-5 text-white">Logo</a>
+            <a href="/learn" className="p-5 duration-300 ease-in-out hover:bg-[#304165] hover:text-white">Learn</a>
+            <a href="/practice" className="p-5 duration-300 ease-in-out hover:bg-[#304165] hover:text-white">Practice</a>
+            <a href="/settings" className="p-5 duration-300 ease-in-out hover:bg-[#304165] hover:text-white">Settings</a>
+            <a href="/profile" className="p-5 duration-300 ease-in-out hover:bg-[#304165] hover:text-white ml-auto">Profile</a>
         </div>
     );
 }
