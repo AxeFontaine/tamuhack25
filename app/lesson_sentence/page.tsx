@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation';
 
 const Sentence = () => {
   const [timer, setTimer] = useState(10);
-  const [signs, setSigns] = useState(['I am', 'hungry']);
+  const [signs, setSigns] = useState(['I', 'a', 'm', 'h', 'u', 'n', 'g', 'r', 'y']);
   const [currSignIdx, setCurrSignIdx] = useState(0);
+  const [currWord, setCurrWord] = useState('');
 
   const [currActivity, setCurrActivity] = useState<number>(() => {
     // Initialize currActivity from localStorage
@@ -16,25 +17,43 @@ const Sentence = () => {
   const router = useRouter();
 
   useEffect(() => {
+    const fetchCurrWord = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/curr_word');
+        const data = await response.json();
+        setCurrWord(data.curr_word);
+        if (data.curr_word == signs[currSignIdx].toLowerCase()) {
+          setCurrSignIdx(currSignIdx + 1);
+          setTimer(10);
+        }
+      } catch (error) {
+        console.error('Error fetching current word:', error);
+      }
+    };
+
+    const interval = setInterval(fetchCurrWord, 500); // Poll every 500ms
+    return () => clearInterval(interval);
+  }, [currSignIdx, signs]);
+
+  useEffect(() => {
     // Update localStorage whenever currActivity changes
     localStorage.setItem('currActivity', currActivity.toString());
   }, [currActivity]);
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       if (timer == 0) {
-        if (currSignIdx < signs.length - 1) {
-          setCurrSignIdx(currSignIdx + 1);
-          setTimer(10);
-        } else {
+        if (currActivity > 1) {
           setCurrActivity(currActivity - 1);
-          router.back();
         }
+        router.back();
         return;
       }
       setTimer(timer - 1);
     }, 1000);
-  }, [timer]);
+
+    return () => clearTimeout(timeout);
+  }, [currActivity, router, timer]);
 
   return (
     <div className="h-full w-full flex bg-[#2F394D] justify-center items-center">
@@ -56,8 +75,9 @@ const Sentence = () => {
         </div>
 
         <div className="w-full h-5/6 bg-[#330036] flex flex-col justify-evenly items-center font-black text-3xl text-white">
-          CAMERA
+          <img src="http://localhost:5000/video_feed" alt="ASL Video Stream" />
         </div>
+        <div className="text-2xl text-white font-bold">{currWord}</div>
       </div>
     </div>
   );
