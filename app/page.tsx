@@ -2,7 +2,16 @@
 
 export default function Home() {
   return (
-    <div className="flex flex-col bg-[#2F394D] min-h-screen h-full justify-center items-center">
+    <div className="flex flex-col  bg-[#2F394D]  min-h-screen">
+      <div className="flex justify-between pl-5 pr-5 items-center">
+          <img src = "Back.png"></img>
+          <div className="bg-[#330036] text-xl p-2 rounded-md">
+            SIGN UP
+          </div>
+
+      </div>
+        <div className="flex flex-col  h-full justify-center items-center">
+      
       <div className="flex flex-col bg-[#330036] w-[30%] h-[70vh] items-center justify-evenly rounded-2xl ">
         <div className="font-bold text-2xl">
           Sign in
@@ -34,10 +43,10 @@ export default function Home() {
           OR
         </div>
 
-        <div className="flex bg-[#56666B] w-[70%] rounded-xl h-fit p-1 text-l  justify-evenly " >
-            <div>
-            g
-            </div>
+        <div className="flex bg-[#56666B] w-[70%] rounded-xl h-fit p-1 text-l  justify-evenly items-center" >
+            <img src = "googlelogo.png" className="h-8 w-8">
+            
+            </img>
           <div className="">
             Sign in with google
           </div>
@@ -45,5 +54,8 @@ export default function Home() {
 
       </div>
     </div>
+
+    </div>
+    
   );
 }
