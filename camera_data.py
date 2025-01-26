@@ -3,7 +3,7 @@ import mediapipe as mp
 import pandas as pd
 import tensorflow as tf
 import numpy as np
-from tensorflow.keras.models import load_model
+from tensorflow.keras.layers import TFSMLayer
 
 # Initialize MediaPipe Hand Landmark model
 mp_hands = mp.solutions.hands
@@ -12,7 +12,9 @@ hands = mp_hands.Hands(
     min_tracking_confidence=0.5)
 
 # Initialize ASL model
-model = load_model("asl_model")
+model = tf.keras.Sequential([
+    TFSMLayer("asl_model", call_endpoint="serving_default")  # Adjust `call_endpoint` if needed
+])
 curr_word = ""
 
 # Exclude i and j because they are non-static letters, p and q because Anthony cannot physically do them right (yikes)
@@ -72,16 +74,18 @@ while True:
     if len(right) >= 42:
         new_right = np.array(right[:42]).reshape(1, -1)
         predictions = model.predict(new_right)
-        predicted_class = np.argmax(predictions, axis=1)
-        confidence = predictions[0][predicted_class[0]]
 
-        if confidence > 0.7:
-            curr_word = labels[predicted_class[0]]
-        else:
-            curr_word = ""
+        predictions = list(predictions.values())[0]
+        predicted_class = np.argmax(predictions)
+        #confidence = predictions[predicted_class]
 
-        cv2.putText(frame, f"Word: {curr_word}, Confidence: {confidence * 100:.2f}%", (10, 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-        print(f"Predicted Word: {labels[predicted_class[0]]}, Predicted Class: {predicted_class}, Predictions: {predictions}")
+        #if confidence > 0.7:
+        curr_word = labels[predicted_class]
+        #else:
+        #    curr_word = ""
+
+        cv2.putText(frame, f"Word: {curr_word},", (10, 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+        print(f"Predicted Word: {labels[predicted_class]} Predicted Class: {predicted_class}, Predictions: {predictions}")
 
     # Display window
     cv2.imshow('Hand Landmarks', frame)
