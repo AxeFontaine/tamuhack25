@@ -1,9 +1,7 @@
-import cv2
+import cv2, os
 import mediapipe as mp
 import pandas as pd
-import tensorflow as tf
-import numpy as np
-from tensorflow.keras.models import load_model
+import time
 
 # Initialize MediaPipe Hand Landmark model
 mp_hands = mp.solutions.hands
@@ -11,24 +9,24 @@ hands = mp_hands.Hands(
     min_detection_confidence=0.5,
     min_tracking_confidence=0.5)
 
-# Initialize ASL model
-model = load_model("asl_model")
-curr_word = ""
-
-# Exclude i and j because they are non-static letters, p and q because Anthony cannot physically do them right (yikes)
-labels = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y"]
-
 # Start video stream
 cap = cv2.VideoCapture(0)
 
+# Identify which folder to write data too and make path if needed
+data_folder = input("What folder do you want to write to: ")
 
-while True:
-    # Get the FPS property
-    fps = cap.get(cv2.CAP_PROP_FPS)
+if not os.path.exists(f"letters/{data_folder}/"):
+    os.mkdir(f"letters/{data_folder}/")
 
-    print(f"Frames per second: {fps}")
-    
-    # Attempt to read frame from the video stream
+# Loop for a minute
+file_number = 0
+start_time = time.time()
+
+# Start data collection
+frames = []
+
+while time.time() - start_time < 60 and file_number < 300:
+    # Read frame from the video stream
     ret, frame = cap.read()
     if not ret:
         break
@@ -38,11 +36,12 @@ while True:
     frame = cv2.flip(frame, 1)
     results = hands.process(frame)
 
-    # Draw landmarks on the frame if detected
+    # Set up filler info
+    left = []
     right = []
-    if results.multi_hand_landmarks:
 
-        has_missing_hand = len(results.multi_hand_landmarks) != 2
+    # Draw landmarks on the frame if detected
+    if results.multi_hand_landmarks:
 
         # Loop through each hand's landmarks
         for hand_landmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
@@ -55,38 +54,35 @@ while True:
                 elif hand_label == "Right":
                     color = (0, 0, 255)
 
-                # Draw the landmarks
+                # Visualize the landmarks
                 for id, landmark in enumerate(hand_landmarks.landmark):
                     x, y = int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])
-                    z = landmark.z
                     cv2.circle(frame, (x, y), 7, color, -1)
-
-                    if hand_label == "Right":
-                        right.append(landmark.x)
-                        right.append(landmark.y)
 
                     # Display landmark ID number next to the landmark point
                     cv2.putText(frame, str(id), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
+                    # Save the normalized landmarks
+                    if hand_label == "Left":
+                        left.append(landmark.x)
+                        left.append(landmark.y)
+                    elif hand_label == "Right":
+                        right.append(landmark.x)
+                        right.append(landmark.y)
 
-    if len(right) >= 42:
-        new_right = np.array(right[:42]).reshape(1, -1)
-        predictions = model.predict(new_right)
-        predicted_class = np.argmax(predictions, axis=1)
-        confidence = predictions[0][predicted_class[0]]
+        # Convert the nested dict to a DataFrame
+        data = {"Right": right}
+        dataframe = pd.DataFrame.from_dict({i: data[i] for i in data.keys()}, orient='index')
+        dataframe.columns = dataframe.columns.astype(str)
 
-        if confidence > 0.7:
-            curr_word = labels[predicted_class[0]]
-        else:
-            curr_word = ""
+        # Save the DataFrame as a parquet file
+        dataframe.to_parquet(f"letters/{data_folder}/{data_folder}_{file_number}.parquet")
+        file_number += 1
 
-        cv2.putText(frame, f"Word: {curr_word}, Confidence: {confidence * 100:.2f}%", (10, 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-        print(f"Predicted Word: {labels[predicted_class[0]]}, Predicted Class: {predicted_class}, Predictions: {predictions}")
-
-    # Display window
+    # Display the frame in a window
     cv2.imshow('Hand Landmarks', frame)
 
-    # Exit condition
+    # Break the loop if 'q' is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
