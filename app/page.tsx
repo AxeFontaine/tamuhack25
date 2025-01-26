@@ -1,12 +1,14 @@
 'use client';
-import { signInWithGoogle } from "./_config/auth";
+import { signInWithGoogle , signOut } from "./_config/auth";
 import { onAuthStateChanged , User} from "firebase/auth";
 import { auth } from "./_config/firebaseConfig";
 import { useEffect, useState } from "react";
+import  {useRouter} from "next/navigation";
 
 export default function Home() {
 
   const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -22,21 +24,30 @@ export default function Home() {
 
   const handleSignIn = async () => {
 
+      console.log("Signing in with Google");
       try{
         await signInWithGoogle();
+        router.push('dashboard');
       }
       catch(error){
         console.error("Error signing in with Google", error);
       }
-      //check log in status
-      
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      console.log("Sign out successful");
+    } catch (error) {
+      console.error("Error signing out", error);
+    }
   };
   
   return (
     <div className="flex flex-col  bg-[#2F394D]  min-h-screen">
       <div className="flex justify-between pl-5 pr-5 items-center">
           <img src = "Back.png"></img>
-          <div className="bg-[#330036] text-xl p-2 rounded-md">
+          <div className="bg-[#330036] text-xl p-2 rounded-md " >
             SIGN UP
           </div>
 
