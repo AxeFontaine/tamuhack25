@@ -1,6 +1,37 @@
-
+'use client';
+import { signInWithGoogle } from "./_config/auth";
+import { onAuthStateChanged , User} from "firebase/auth";
+import { auth } from "./_config/firebaseConfig";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleSignIn = async () => {
+
+      try{
+        await signInWithGoogle();
+      }
+      catch(error){
+        console.error("Error signing in with Google", error);
+      }
+      //check log in status
+      
+  };
+  
   return (
     <div className="flex flex-col  bg-[#2F394D]  min-h-screen">
       <div className="flex justify-between pl-5 pr-5 items-center">
@@ -43,14 +74,15 @@ export default function Home() {
           OR
         </div>
 
-        <div className="flex bg-[#56666B] w-[70%] rounded-xl h-fit p-1 text-l  justify-evenly items-center" >
+        <button className="flex bg-[#56666B] w-[70%] rounded-xl h-fit p-1 text-l  justify-evenly items-center" 
+        onClick={handleSignIn}>
             <img src = "googlelogo.png" className="h-8 w-8">
             
             </img>
-          <div className="">
+          <div className="" >
             Sign in with google
           </div>
-        </div>
+        </button>
 
       </div>
     </div>
