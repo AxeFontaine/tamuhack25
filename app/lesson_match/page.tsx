@@ -4,7 +4,6 @@
 import { useEffect, useState } from 'react';
 
 const Match = () => {
-  const initialData = ['1', '2', '3', '4', '5', '6', '1', '2', '3', '4', '5', '6'];
   const [match_data, setMatch_data] = useState<string[]>([]);
   const [selected, setSelected] = useState<number[]>([]);
   const [matched, setMatched] = useState<number[]>([]);
@@ -18,6 +17,7 @@ const Match = () => {
   };
 
   useEffect(() => {
+    const initialData = ['1', '2', '3', '4', '5', '6', '1', '2', '3', '4', '5', '6'];
     setMatch_data(shuffle([...initialData]));
   }, []);
 
