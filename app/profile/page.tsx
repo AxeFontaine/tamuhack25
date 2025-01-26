@@ -6,6 +6,7 @@ import { Account } from "../_config/firebaseUtils";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../_config/firebaseConfig";
 import { User } from "firebase/auth";
+import NavigationBar from "../_components/NavigationBar";
 
 const Profile = () => {
   //pull user data from firebase
@@ -37,12 +38,11 @@ const Profile = () => {
       return () => unsubscribe();
   }, []);
 
-  console.log(acct);
   return (
-    
-      <div>
-          Welcome {acct?.displayname}
-      </div>
+    <div>
+      <NavigationBar />
+      Profile
+    </div>
   );
 };
 
